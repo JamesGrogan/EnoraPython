@@ -1,3 +1,9 @@
+import math as math
+import matplotlib.pyplot as plt
+import numpy as np
+import scipy as sp
+import scipy.interpolate
+
 # QUESTION ONE
 
 # Defining constants
@@ -21,9 +27,42 @@ def lagrange_point_one(x):
 
 root = secant_method(lagrange_point_one, 3.1E8, 3.3E8, 11)
 print("Calculated lagrange point is: " + str(format(root, '.5g'))) # format() converts display output to 5 significant figures
-#print("Actual lagrange point is: " + str(earth_moon_distance * 0.8403997))
+#print("Actual lagrange point is: " + str(format(earth_moon_distance * 0.8403997, '.5g')))
 
 
 # QUESTION TWO
 
-#
+# Function definitions
+def trapezium_rule(f, m, x, a, b, n):
+    """Implements the trapezium rule"""
+    h = (b-a)/float(n)
+    s = 0.5*(f(m, x, a) + f(m, x, b))
+    for i in range(n):
+        s = s + f(m, x, a + i*h)
+    return h*s
+
+def bessel(m, x, theta):
+    """Holds the formula for the integral in the Bessel function"""
+    return math.cos(m*theta - x*math.sin(theta))
+
+def bessel_value(m, x):
+    """Calculates the value of the Bessel function using the trapezium rule"""
+    return (1 / math.pi) * trapezium_rule(bessel, m, x, 0, math.pi, 10000)
+
+# Plotting the Bessel functions
+x_values = [[], [], []] # List of three empty lists to store the x values of the Bessel function from m=0 to m=2. Each list will become a list of 0 to 20 inclusive.
+bessel_values = [[], [], []] # List of three empty lists to store the values of the Bessel function from m=0 to m=2. Each list contains the Bessel function value from x=0 to x=20.
+
+for m in range(0, 3, 1): # Loops through m values
+    for x in range(0, 21, 1): # Loops through x values
+        x_values[m].append(x)
+        bessel_values[m].append(bessel_value(m, x)) # Calculates the value of the Bessel function and adds it to the list
+
+
+for element in range(len(x_values)):
+    plt.plot(x_values[element], bessel_values[element], label=("m = " + str(element)))
+plt.title("Bessel functions for different values of m")
+plt.ylabel("Bessel function value")
+plt.xlabel("x")
+plt.legend()
+plt.show()
