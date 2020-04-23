@@ -60,7 +60,10 @@ for m in range(0, 3, 1): # Loops through m values
 
 
 for element in range(len(x_values)):
-    plt.plot(x_values[element], bessel_values[element], label=("m = " + str(element)))
+    x_values_new = np.linspace(x_values[element][0], x_values[element][-1], 300)
+    a_BSpline = sp.interpolate.make_interp_spline(x_values[element], bessel_values[element])
+    bessel_values_new = a_BSpline(x_values_new)
+    plt.plot(x_values_new, bessel_values_new, label=("m = " + str(element)))
 plt.title("Bessel functions for different values of m")
 plt.ylabel("Bessel function value")
 plt.xlabel("x")
